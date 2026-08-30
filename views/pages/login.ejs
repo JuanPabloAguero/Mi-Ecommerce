@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Iniciar Sesión - MiEcommerce</title>
+  <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+  
+  <!-- Header -->
+  <%- include('../partials/header') %>
+
+  <!-- Banner verde menta de fondo -->
+  <div class="green-banner"></div>
+
+  <main class="register-container">
+    <h2>¡Hola!</h2>
+    
+    <form action="/" method="GET" class="register-form">
+      <div class="form-group">
+        <input type="text" id="username" name="username" placeholder="Tu nombre de usuario" required>
+      </div>
+
+      <div class="form-group">
+        <input type="password" id="password" name="password" placeholder="Tu contraseña" required>
+      </div>
+
+      <button type="submit" class="btn-submit">Iniciar Sesión</button>
+    </form>
+
+    <div class="form-footer">
+      <p>¿No tienes cuenta? <a href="/register">Regístrate</a></p>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <%- include('../partials/footer') %>
+
+</body>
+</html>

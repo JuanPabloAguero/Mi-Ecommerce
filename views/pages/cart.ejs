@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Carrito de Compras - MiEcommerce</title>
+  <link rel="stylesheet" href="/css/styles.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+
+  <!-- Header -->
+  <%- include('../partials/header') %>
+
+  <!-- Barra superior con Búsqueda, Carrito y Usuario -->
+  <div class="top-nav-actions" style="display: flex; align-items: center; justify-content: space-between; padding: 15px 50px;">
+    <%- include('../partials/searchBar') %>
+    <div style="display: flex; gap: 20px; align-items: center;">
+      <%- include('../partials/cartIcon') %>
+      <%- include('../partials/userProfile') %>
+    </div>
+  </div>
+
+  <main class="cart-container">
+    <!-- Enlace Volver al listado -->
+    <a href="/" class="back-link"><i class="fas fa-arrow-left"></i> Volver</a>
+
+    <h1 class="cart-title">Productos en tu Carrito</h1>
+
+    <!-- Listado de Productos -->
+    <section class="cart-list">
+      
+      <!-- Producto 1 -->
+      <article class="cart-item">
+        <div class="cart-item-info">
+          <div class="cart-item-img product-img-placeholder" style="width:50px; height:50px;"></div>
+          <span class="cart-item-title">Jack Daniel's Tennessee Honey Botella 750 mL</span>
+        </div>
+        <div class="cart-item-controls">
+          <button class="btn-remove">Quitar</button>
+          <div class="quantity-picker">
+            <button class="quantity-btn">-</button>
+            <span class="quantity-value">1</span>
+            <button class="quantity-btn">+</button>
+          </div>
+          <span class="cart-item-price">19.900</span>
+        </div>
+      </article>
+
+      <!-- Producto 2 -->
+      <article class="cart-item">
+        <div class="cart-item-info">
+          <div class="cart-item-img product-img-placeholder" style="width:50px; height:50px;"></div>
+          <span class="cart-item-title">1 Combo Hamburguesa</span>
+        </div>
+        <div class="cart-item-controls">
+          <button class="btn-remove">Quitar</button>
+          <div class="quantity-picker">
+            <button class="quantity-btn">-</button>
+            <span class="quantity-value">1</span>
+            <button class="quantity-btn">+</button>
+          </div>
+          <span class="cart-item-price">5.000</span>
+        </div>
+      </article>
+
+      <!-- Producto 3 -->
+      <article class="cart-item">
+        <div class="cart-item-info">
+          <div class="cart-item-img product-img-placeholder" style="width:50px; height:50px;"></div>
+          <span class="cart-item-title">Coca Cola Lata 220mL Pack Original x8</span>
+        </div>
+        <div class="cart-item-controls">
+          <button class="btn-remove">Quitar</button>
+          <div class="quantity-picker">
+            <button class="quantity-btn">-</button>
+            <span class="quantity-value">2</span>
+            <button class="quantity-btn">+</button>
+          </div>
+          <span class="cart-item-price">1.520</span>
+        </div>
+      </article>
+
+    </section>
+
+    <!-- Campo de Cupón (BONUS US #7) -->
+    <div class="coupon-section">
+      <input type="text" placeholder="Código de descuento" class="coupon-input">
+      <button class="btn-coupon">Aplicar</button>
+    </div>
+
+    <!-- Sección del Total y Checkout -->
+    <section class="cart-summary">
+      <div class="total-points">
+        <span>Total de Puntos</span>
+        <strong>26.420</strong>
+      </div>
+      <a href="/checkout" class="btn-checkout">Ir a Pagar</a>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <%- include('../partials/footer') %>
+
+</body>
+</html>

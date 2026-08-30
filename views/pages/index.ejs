@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Inicio - MiEcommerce</title>
+  <link rel="stylesheet" href="/css/styles.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+  
+  <!-- Header -->
+  <%- include('../partials/header') %>
+
+  <!-- Barra superior con Búsqueda, Carrito y Usuario -->
+  <div class="top-nav-actions" style="display: flex; align-items: center; justify-content: space-between; padding: 15px 50px;">
+    <%- include('../partials/searchBar') %>
+    <div style="display: flex; gap: 20px; align-items: center;">
+      <%- include('../partials/cartIcon') %>
+      <%- include('../partials/userProfile') %>
+    </div>
+  </div>
+
+  <!-- Categorías (Superior) -->
+  <%- include('../partials/categoriesBar') %>
+
+  <!-- ProductHero (Promociones) -->
+  <section class="hero-section">
+    <div class="hero-banner">
+      <div class="hero-info">
+        <h3>50% OFF en Combo Plus</h3>
+        <p>Canjeando 50.000 puntos MiEcommerce.</p>
+      </div>
+    </div>
+    <div class="hero-banner">
+      <div class="hero-info">
+        <h3>50% OFF en HBO Max</h3>
+        <p>Canjeando 50.000 puntos MiEcommerce.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Grilla 1: Te puede interesar -->
+  <section class="products-section">
+    <h2>Te puede interesar</h2>
+    <div class="product-grid">
+      <!-- Inyectamos 4 tarjetas usando el parcial -->
+      <% for(let i=0; i<4; i++) { %>
+        <%- include('../partials/productCard') %>
+      <% } %>
+    </div>
+  </section>
+
+  <!-- Grilla 2: Los más pedidos -->
+  <section class="products-section" style="background-color: #f0f0f0;">
+    <h2>Los más pedidos</h2>
+    <div class="product-grid">
+      <!-- Inyectamos 8 tarjetas usando el parcial -->
+      <% for(let i=0; i<8; i++) { %>
+        <%- include('../partials/productCard') %>
+      <% } %>
+    </div>
+  </section>
+
+  <!-- Categorías (Inferior) -->
+  <%- include('../partials/categoriesBar') %>
+
+  <!-- Footer -->
+  <%- include('../partials/footer') %>
+
+</body>
+</html>

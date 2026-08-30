@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Checkout - MiEcommerce</title>
+  <link rel="stylesheet" href="/css/styles.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+
+  <!-- Header -->
+  <%- include('../partials/header') %>
+
+  <main class="cart-container">
+    <!-- Enlace de retorno explícito a la Home -->
+    <a href="/" class="back-link"><i class="fas fa-arrow-left"></i> Volver a Inicio</a>
+
+    <h1 class="cart-title">Finalizar Compra</h1>
+
+    <div style="background: white; padding: 30px; border-radius: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); text-align: center;">
+      <p>Proceso de pago en construcción...</p>
+      <a href="/" class="btn-checkout" style="display: inline-block; margin-top: 15px;">Ir a la página principal</a>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <%- include('../partials/footer') %>
+
+</body>
+</html>
