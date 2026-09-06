@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= product.name %> - MiEcommerce</title>
+  <link rel="stylesheet" href="/css/styles.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+  
+  <%- include('../partials/header') %>
+
+  <main class="product-page-container">
+    
+    <% 
+      // Configuración del Fallback para la imagen del producto
+      const defaultImage = '/images/default-product.png';
+      const productImage = (product.image && product.image.trim() !== '') ? product.image : defaultImage;
+    %>
+
+    <!-- Breadcrumb (Categoría) -->
+    <div class="breadcrumb">
+      <a href="/"><i class="fas fa-arrow-left"></i> Volver al listado</a> <span>&gt; <%= product.category || 'General' %></span>
+    </div>
+
+    <!-- Sección Principal del Detalle -->
+    <section class="product-detail-layout">
+      
+      <!-- Primera imagen disponible (o fallback) -->
+      <div class="product-gallery">
+        <div class="gallery-main-img" style="display: flex; justify-content: center; align-items: center; background: #fff;">
+          <img src="<%= productImage %>" alt="<%= product.name %>" style="max-width: 100%; max-height: 400px; object-fit: contain;" onerror="this.src='<%= defaultImage %>';">
+        </div>
+      </div>
+
+      <!-- Datos del Producto -->
+      <div class="product-info-panel">
+        <h1><%= product.name %></h1>
+        <div class="product-price-large">$<%= product.price.toLocaleString('es-AR') %> <span>PUNTOS</span></div>
+        
+        <!-- Botón para agregar al carrito -->
+        <form action="/cart/add" method="POST">
+          <!-- Campo oculto con el ID del producto dinámico -->
+          <input type="hidden" name="productId" value="<%= product.id %>">
+          <% if (product.stock > 0) { %>
+            <button type="submit" class="btn-add-cart">Agregar al Carrito</button>
+          <% } else { %>
+            <button type="button" class="btn-add-cart disabled" disabled>Sin stock</button>
+          <% } %>
+        </form>
+        
+        <div class="product-description">
+          <p><%= product.description || 'Sin descripción disponible para este producto.' %></p>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- Grilla de productos relacionados -->
+    <section class="products-section" style="padding: 0 0 20px 0;">
+  <h2>Productos relacionados</h2>
+  
+  <% if (relatedProducts && relatedProducts.length > 0) { %>
+    <div class="product-grid">
+      <% relatedProducts.forEach(item => { %>
+        <%- include('../partials/productCard', { product: item }) %>
+      <% }) %>
+    </div>
+  <% } else { %>
+    <!-- Escenario 3: Mensaje amigable cuando no hay relacionados -->
+    <p style="color: #777; font-style: italic; margin-top: 15px;">
+      No encontramos otros productos relacionados en esta categoría por el momento.
+    </p>
+  <% } %>
+</section>
+
+  </main>
+
+  <%- include('../partials/categoriesBar') %>
+  <%- include('../partials/footer') %>
+
+</body>
+</html>

@@ -1,0 +1,17 @@
+<!-- views/partials/header.ejs -->
+<header class="header" style="display: flex; align-items: center; justify-content: space-between; padding: 15px 50px;">
+  <!-- Logo -->
+  <a href="/" class="logo">MiEcommerce</a>
+
+  <!-- Mostrar navegación solo si NO se requiere un header mínimo -->
+  <% if (typeof minimal === 'undefined' || !minimal) { %>
+    <!-- Barra de Búsqueda -->
+    <%- include('./searchBar') %>
+
+    <!-- Carrito y Usuario -->
+    <div style="display: flex; gap: 20px; align-items: center;">
+      <%- include('./cartIcon') %>
+      <%- include('./userProfile') %>
+    </div>
+  <% } %>
+</header>
