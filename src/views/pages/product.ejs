@@ -3,79 +3,81 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Detalle de Producto - MiEcommerce</title>
+  <title><%= product.name %> - MiEcommerce</title>
   <link rel="stylesheet" href="/css/styles.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
   
-  <!-- Header -->
   <%- include('../partials/header') %>
-
-  <!-- Barra superior con Búsqueda, Carrito y Usuario -->
-  <div class="top-nav-actions" style="display: flex; align-items: center; justify-content: space-between; padding: 15px 50px;">
-    <%- include('../partials/searchBar') %>
-    <div style="display: flex; gap: 20px; align-items: center;">
-      <%- include('../partials/cartIcon') %>
-      <%- include('../partials/userProfile') %>
-    </div>
-  </div>
 
   <main class="product-page-container">
     
-    <!-- Breadcrumb (Migas de pan: pequeño texto debajo para volver y con nombre de la categoría del producto) -->
+    <% 
+      // Configuración del Fallback para la imagen del producto
+      const defaultImage = '/images/default-product.png';
+      const productImage = (product.image && product.image.trim() !== '') ? product.image : defaultImage;
+    %>
+
+    <!-- Breadcrumb (Categoría) -->
     <div class="breadcrumb">
-      <a href="/"><i class="fas fa-arrow-left"></i> Volver al listado</a> <span>&gt; Alimentos</span>
+      <a href="/"><i class="fas fa-arrow-left"></i> Volver al listado</a> <span>&gt; <%= product.category || 'General' %></span>
     </div>
 
     <!-- Sección Principal del Detalle -->
     <section class="product-detail-layout">
       
-      <!-- Columna Izquierda: Galería -->
+      <!-- Primera imagen disponible (o fallback) -->
       <div class="product-gallery">
-        <div class="gallery-thumbnails">
-          <div class="thumb-img active"></div>
-          <div class="thumb-img"></div>
-          <div class="thumb-img"></div>
+        <div class="gallery-main-img" style="display: flex; justify-content: center; align-items: center; background: #fff;">
+          <img src="<%= productImage %>" alt="<%= product.name %>" style="max-width: 100%; max-height: 400px; object-fit: contain;" onerror="this.src='<%= defaultImage %>';">
         </div>
-        <div class="gallery-main-img"></div>
       </div>
 
-      <!-- Columna Derecha: Información del Producto -->
+      <!-- Datos del Producto -->
       <div class="product-info-panel">
-        <h1>Whiskey Jack Daniels Honey 750ml</h1>
-        <div class="product-price-large">19.900 <span>PUNTOS</span></div>
+        <h1><%= product.name %></h1>
+        <div class="product-price-large">$<%= product.price.toLocaleString('es-AR') %> <span>PUNTOS</span></div>
         
-        <button class="btn-add-cart">Agregar al Carrito</button>
+        <!-- Botón para agregar al carrito -->
+        <form action="/cart/add" method="POST">
+          <!-- Campo oculto con el ID del producto dinámico -->
+          <input type="hidden" name="productId" value="<%= product.id %>">
+          <% if (product.stock > 0) { %>
+            <button type="submit" class="btn-add-cart">Agregar al Carrito</button>
+          <% } else { %>
+            <button type="button" class="btn-add-cart disabled" disabled>Sin stock</button>
+          <% } %>
+        </form>
         
         <div class="product-description">
-          <p>Un verdaderamente fabuloso licor de whisky Jack Daniels. Está hecho con una mezcla de ricas especias y suave, miel tersa y el resultado es delicioso sobre hielo o café.</p>
-          <p>Aroma de caramelo y roble carbonizado, un poco de flor de naranja, miel de manuka y vainilla.</p>
-          <p>Boca: grueso y cremoso, con notas de vainilla, roble tostado, miel de nuevo, un poco de albaricoque también.</p>
-          <p>Acabado: De buena longitud - redondeado y rico.</p>
-          <p>No incluye vasos, la foto es sólo ilustrativa.</p>
+          <p><%= product.description || 'Sin descripción disponible para este producto.' %></p>
         </div>
       </div>
 
     </section>
 
-    <!-- Grilla de productos relacionados (BONUS US #6) -->
+    <!-- Grilla de productos relacionados -->
     <section class="products-section" style="padding: 0 0 20px 0;">
-      <h2>También te puede interesar</h2>
-      <div class="product-grid">
-        <!-- Inyectamos 4 tarjetas usando el parcial -->
-        <% for(let i=0; i<4; i++) { %>
-          <%- include('../partials/productCard') %>
-        <% } %>
-      </div>
-    </section>
+  <h2>Productos relacionados</h2>
+  
+  <% if (relatedProducts && relatedProducts.length > 0) { %>
+    <div class="product-grid">
+      <% relatedProducts.forEach(item => { %>
+        <%- include('../partials/productCard', { product: item }) %>
+      <% }) %>
+    </div>
+  <% } else { %>
+    <!-- Escenario 3: Mensaje amigable cuando no hay relacionados -->
+    <p style="color: #777; font-style: italic; margin-top: 15px;">
+      No encontramos otros productos relacionados en esta categoría por el momento.
+    </p>
+  <% } %>
+</section>
 
   </main>
 
-  <!-- Categorías Inferiores -->
   <%- include('../partials/categoriesBar') %>
-
-  <!-- Footer -->
   <%- include('../partials/footer') %>
 
 </body>

@@ -12,91 +12,87 @@
   <!-- Header -->
   <%- include('../partials/header') %>
 
-  <!-- Barra superior con Búsqueda, Carrito y Usuario -->
-  <div class="top-nav-actions" style="display: flex; align-items: center; justify-content: space-between; padding: 15px 50px;">
-    <%- include('../partials/searchBar') %>
-    <div style="display: flex; gap: 20px; align-items: center;">
-      <%- include('../partials/cartIcon') %>
-      <%- include('../partials/userProfile') %>
-    </div>
-  </div>
-
   <main class="cart-container">
-    <!-- Enlace Volver al listado -->
-    <a href="/" class="back-link"><i class="fas fa-arrow-left"></i> Volver</a>
+    <a href="/" class="back-link"><i class="fas fa-arrow-left"></i> Volver a la tienda</a>
 
     <h1 class="cart-title">Productos en tu Carrito</h1>
 
-    <!-- Listado de Productos -->
-    <section class="cart-list">
-      
-      <!-- Producto 1 -->
-      <article class="cart-item">
-        <div class="cart-item-info">
-          <div class="cart-item-img product-img-placeholder" style="width:50px; height:50px;"></div>
-          <span class="cart-item-title">Jack Daniel's Tennessee Honey Botella 750 mL</span>
-        </div>
-        <div class="cart-item-controls">
-          <button class="btn-remove">Quitar</button>
-          <div class="quantity-picker">
-            <button class="quantity-btn">-</button>
-            <span class="quantity-value">1</span>
-            <button class="quantity-btn">+</button>
-          </div>
-          <span class="cart-item-price">19.900</span>
-        </div>
-      </article>
+    <% if (cartItems && cartItems.length > 0) { %>
+      <!-- Escenario 4: Botón Vaciar Carrito -->
+      <form action="/cart/clear" method="POST" style="text-align: right; margin-bottom: 15px;">
+        <button type="submit" class="btn-remove">Vaciar carrito</button>
+      </form>
 
-      <!-- Producto 2 -->
-      <article class="cart-item">
-        <div class="cart-item-info">
-          <div class="cart-item-img product-img-placeholder" style="width:50px; height:50px;"></div>
-          <span class="cart-item-title">1 Combo Hamburguesa</span>
-        </div>
-        <div class="cart-item-controls">
-          <button class="btn-remove">Quitar</button>
-          <div class="quantity-picker">
-            <button class="quantity-btn">-</button>
-            <span class="quantity-value">1</span>
-            <button class="quantity-btn">+</button>
-          </div>
-          <span class="cart-item-price">5.000</span>
-        </div>
-      </article>
+      <!-- Escenario 2: Listado dinámico -->
+      <section class="cart-list">
+        <% cartItems.forEach(item => { %>
+          <article class="cart-item">
+            <div class="cart-item-info">
+              <img src="<%= item.image %>" alt="<%= item.name %>" style="width:50px; height:50px; object-fit:cover;">
+              <span class="cart-item-title"><%= item.name %></span>
+              <!-- Texto con el stock total disponible -->
+                <small style="color: #666; font-size: 12px; margin-top: 3px;">
+                  Stock disponible: <strong><%= item.stock %></strong>
+                </small>
+            </div>
 
-      <!-- Producto 3 -->
-      <article class="cart-item">
-        <div class="cart-item-info">
-          <div class="cart-item-img product-img-placeholder" style="width:50px; height:50px;"></div>
-          <span class="cart-item-title">Coca Cola Lata 220mL Pack Original x8</span>
+            <div class="cart-item-controls">
+              <!-- Quitar producto -->
+              <form action="/cart/remove" method="POST" style="display:inline;">
+                <input type="hidden" name="productId" value="<%= item.id %>">
+                <button type="submit" class="btn-remove">Quitar</button>
+              </form>
+
+              <!-- Escenario 3: Controles ➕ y ➖ -->
+              <div class="quantity-picker" style="display:flex; align-items:center; gap:5px;">
+                
+                <!-- 1. Formulario Decrementar (-) -->
+                <form action="/cart/update" method="POST" style="display:inline;">
+                  <input type="hidden" name="productId" value="<%= item.id %>">
+                  <input type="hidden" name="action" value="decrease">
+                  <button type="submit" class="quantity-btn">-</button>
+                </form>
+
+                <!-- Cantidad actual -->
+                <span class="quantity-value"><%= item.quantity %></span>
+
+                <!-- 2. Formulario Incrementar (+) validando stock -->
+                <form action="/cart/update" method="POST" style="display:inline;">
+                  <input type="hidden" name="productId" value="<%= item.id %>">
+                  <input type="hidden" name="action" value="increase">
+                  
+                  <% if (item.quantity >= item.stock) { %>
+                    <button type="button" class="quantity-btn disabled" disabled title="Límite de stock alcanzado">+</button>
+                  <% } else { %>
+                    <button type="submit" class="quantity-btn">+</button>
+                  <% } %>
+                </form>
+
+              </div>
+
+              <!-- Precio y Subtotal -->
+              <span class="cart-item-price">$<%= item.subtotal.toLocaleString('es-AR') %></span>
+            </div>
+          </article>
+        <% }) %>
+      </section>
+
+      <!-- Escenario 5: Total General -->
+      <section class="cart-summary">
+        <div class="total-points">
+          <span>Total General</span>
+          <strong>$<%= total.toLocaleString('es-AR') %></strong>
         </div>
-        <div class="cart-item-controls">
-          <button class="btn-remove">Quitar</button>
-          <div class="quantity-picker">
-            <button class="quantity-btn">-</button>
-            <span class="quantity-value">2</span>
-            <button class="quantity-btn">+</button>
-          </div>
-          <span class="cart-item-price">1.520</span>
-        </div>
-      </article>
+        <a href="/checkout" class="btn-checkout">Ir a Pagar</a>
+      </section>
 
-    </section>
-
-    <!-- Campo de Cupón (BONUS US #7) -->
-    <div class="coupon-section">
-      <input type="text" placeholder="Código de descuento" class="coupon-input">
-      <button class="btn-coupon">Aplicar</button>
-    </div>
-
-    <!-- Sección del Total y Checkout -->
-    <section class="cart-summary">
-      <div class="total-points">
-        <span>Total de Puntos</span>
-        <strong>26.420</strong>
-      </div>
-      <a href="/checkout" class="btn-checkout">Ir a Pagar</a>
-    </section>
+    <% } else { %>
+      <!-- Escenario 6: Carrito Vacío -->
+      <section style="text-align: center; padding: 40px 0;">
+        <p style="font-size: 18px; color: #666; margin-bottom: 20px;">Tu carrito de compras está vacío.</p>
+        <a href="/" class="btn-checkout" style="display: inline-block;">Explorar productos</a>
+      </section>
+    <% } %>
   </main>
 
   <!-- Footer -->

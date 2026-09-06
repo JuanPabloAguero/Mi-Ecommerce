@@ -1,8 +1,20 @@
 <!-- views/partials/productCard.ejs -->
-<a href="/products" class="product-card">
-  <div class="product-img-placeholder"></div>
+<% 
+  // Configuración de imagen por defecto (Fallback)
+  const defaultImage = '/images/default-product.png';
+  const productImage = (product.image && product.image.trim() !== '') ? product.image : defaultImage;
+%>
+
+<a href="/products/<%= product.id %>" class="product-card">
+  <div class="product-img-container" style="position: relative;">
+    <img src="<%= productImage %>" alt="<%= product.name %>" class="product-img" onerror="this.src='<%= defaultImage %>';">
+    
+    <% if (product.stock === 0) { %>
+      <span class="stock-badge">Sin stock</span>
+    <% } %>
+  </div>
   <div class="product-info">
-    <div class="product-name">NOMBRE DEL PRODUCTO O SERVICIO</div>
-    <div class="product-price">XX.XXX <span>PUNTOS</span></div>
+    <div class="product-name"><%= product.name %></div>
+    <div class="product-price">$<%= product.price.toLocaleString('es-AR') %> <span>PUNTOS</span></div>
   </div>
 </a>

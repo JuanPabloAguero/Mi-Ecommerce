@@ -12,15 +12,6 @@
   <!-- Header -->
   <%- include('../partials/header') %>
 
-  <!-- Barra superior con Búsqueda, Carrito y Usuario -->
-  <div class="top-nav-actions" style="display: flex; align-items: center; justify-content: space-between; padding: 15px 50px;">
-    <%- include('../partials/searchBar') %>
-    <div style="display: flex; gap: 20px; align-items: center;">
-      <%- include('../partials/cartIcon') %>
-      <%- include('../partials/userProfile') %>
-    </div>
-  </div>
-
   <!-- Categorías (Superior) -->
   <%- include('../partials/categoriesBar') %>
 
@@ -44,9 +35,12 @@
   <section class="products-section">
     <h2>Te puede interesar</h2>
     <div class="product-grid">
-      <!-- Inyectamos 4 tarjetas usando el parcial -->
-      <% for(let i=0; i<4; i++) { %>
-        <%- include('../partials/productCard') %>
+      <% if (suggestedProducts && suggestedProducts.length > 0) { %>
+        <% suggestedProducts.forEach(product => { %>
+          <%- include('../partials/productCard', { product: product }) %>
+        <% }) %>
+      <% } else { %>
+        <p>No hay productos sugeridos disponibles en este momento.</p>
       <% } %>
     </div>
   </section>
@@ -55,9 +49,12 @@
   <section class="products-section" style="background-color: #f0f0f0;">
     <h2>Los más pedidos</h2>
     <div class="product-grid">
-      <!-- Inyectamos 8 tarjetas usando el parcial -->
-      <% for(let i=0; i<8; i++) { %>
-        <%- include('../partials/productCard') %>
+      <% if (mostOrderedProducts && mostOrderedProducts.length > 0) { %>
+        <% mostOrderedProducts.forEach(product => { %>
+          <%- include('../partials/productCard', { product: product }) %>
+        <% }) %>
+      <% } else { %>
+        <p>No hay productos destacados disponibles.</p>
       <% } %>
     </div>
   </section>

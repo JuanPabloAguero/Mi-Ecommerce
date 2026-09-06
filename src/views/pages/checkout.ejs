@@ -12,15 +12,27 @@
   <!-- Header -->
   <%- include('../partials/header') %>
 
-  <main class="cart-container">
-    <!-- Enlace de retorno explícito a la Home -->
-    <a href="/" class="back-link"><i class="fas fa-arrow-left"></i> Volver a Inicio</a>
+  <main class="cart-container" style="text-align: center; padding: 50px 20px;">
+    <h1 class="cart-title">Proceso de Pago</h1>
 
-    <h1 class="cart-title">Finalizar Compra</h1>
+    <div style="background: white; padding: 40px; border-radius: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); max-width: 600px; margin: 0 auto;">
+      <!-- Mensaje requerido -->
+      <h2 style="font-size: 22px; color: #333; margin-bottom: 20px;">
+        Checkout disponible en el próximo sprint
+      </h2>
 
-    <div style="background: white; padding: 30px; border-radius: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); text-align: center;">
-      <p>Proceso de pago en construcción...</p>
-      <a href="/" class="btn-checkout" style="display: inline-block; margin-top: 15px;">Ir a la página principal</a>
+      <!-- Botones de navegación -->
+      <div style="display: flex; gap: 15px; justify-content: center; flex-wrap: wrap; margin-top: 25px;">
+        <!-- Botón Volver al carrito -->
+        <a href="/cart" class="btn-checkout" style="background-color: #6c757d; display: inline-block; text-decoration: none;">
+          <i class="fas fa-shopping-cart"></i> Volver al carrito
+        </a>
+
+        <!-- Botón Volver al inicio -->
+        <a href="/" class="btn-checkout" style="display: inline-block; text-decoration: none;">
+          <i class="fas fa-home"></i> Volver al inicio
+        </a>
+      </div>
     </div>
   </main>
 
