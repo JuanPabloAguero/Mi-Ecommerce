@@ -18,6 +18,7 @@ const productController = {
 
     // Escenario 1: Producto existente
     res.render('pages/product', { 
+      title: product.name,
       product,
       relatedProducts
     });
@@ -29,6 +30,7 @@ const productController = {
     const products = productModel.findByCategory(category);
 
     res.render('pages/category', {
+      title: `Categoría: ${category}`,
       categoryName: category,
       products
     });

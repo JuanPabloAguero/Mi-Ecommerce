@@ -22,7 +22,11 @@ const cartController = {
 
     const total = cartItems.reduce((acc, item) => acc + item.subtotal, 0);
 
-    res.render('pages/cart', { cartItems, total });
+    res.render('pages/cart', { 
+      title: 'Carrito de Compras',
+      cartItems, 
+      total 
+    });
   },
 
   // Escenario 1: Agregar producto
@@ -89,10 +93,6 @@ const cartController = {
   clear: (req, res) => {
     req.session.cart = [];
     res.redirect('/cart');
-  },
-
-  checkout: (req, res) => {
-    res.render('pages/checkout');
   }
 };
 

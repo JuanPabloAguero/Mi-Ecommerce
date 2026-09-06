@@ -1,6 +1,7 @@
 const express = require('express');
 const path = require('path');
 const session = require('express-session');
+const expressLayouts = require('express-ejs-layouts');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -16,9 +17,13 @@ app.use(session({
   saveUninitialized: true
 }));
 
-// Motor de plantillas EJS
+// Motor de plantillas EJS y Express Layouts
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'src/views'));
+
+// Usar express-ejs-layouts
+app.use(expressLayouts);
+app.set('layout', 'layouts/main'); // Ruta relativa desde src/views
 
 // Archivos estáticos
 app.use(express.static(path.join(__dirname, 'public')));
@@ -38,24 +43,25 @@ app.use((req, res, next) => {
   next();
 });
 
-// Importar enrutadores
-const mainRoutes = require('./src/routes/main');
-const productRoutes = require('./src/routes/productRoute');
-const cartRoutes = require('./src/routes/cartRoute');
-const categoryRoutes = require('./src/routes/categoryRoute');
+// Importar enrutador principal
+const routes = require('./src/routes');
 
-// Declaración de rutas
-app.use('/', mainRoutes);
-app.use('/products', productRoutes);
-app.use('/', cartRoutes);
-app.use('/categories', categoryRoutes);
+// Rutas de la aplicación agrupadas en el router principal
+app.use('/', routes);
 
 // Middleware 404 (Debe ir AL FINAL de todas las rutas, "como si fuera un default de switch")
 app.use((req, res, next) => {
-    res.status(404).render('pages/404');
+  res.status(404).render('pages/404', { title: 'Página no encontrada' });
+});
+
+// Middleware Global de Error 500 (Debe llevar obligatoriamente 4 parámetros)
+app.use((err, req, res, next) => {
+  res.status(500).render('pages/500', { title: 'Error interno del servidor' });
 });
 
 // Servidor
 app.listen(PORT, () => {
     console.log(`Servidor corriendo en http://localhost:${PORT}`);
 });
+
+module.exports = app;

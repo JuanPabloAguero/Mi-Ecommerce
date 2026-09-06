@@ -1,43 +1,23 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Checkout - MiEcommerce</title>
-  <link rel="stylesheet" href="/css/styles.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-</head>
-<body>
+<main class="cart-container" style="text-align: center; padding: 50px 20px;">
+  <h1 class="cart-title">Proceso de Pago</h1>
 
-  <!-- Header -->
-  <%- include('../partials/header') %>
+  <div style="background: white; padding: 40px; border-radius: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); max-width: 600px; margin: 0 auto;">
+    <!-- Mensaje requerido -->
+    <h2 style="font-size: 22px; color: #333; margin-bottom: 20px;">
+      Checkout disponible en el próximo sprint
+    </h2>
 
-  <main class="cart-container" style="text-align: center; padding: 50px 20px;">
-    <h1 class="cart-title">Proceso de Pago</h1>
+    <!-- Botones de navegación -->
+    <div style="display: flex; gap: 15px; justify-content: center; flex-wrap: wrap; margin-top: 25px;">
+      <!-- Botón Volver al carrito -->
+      <a href="/cart" class="btn-checkout" style="background-color: #6c757d; display: inline-block; text-decoration: none;">
+        <i class="fas fa-shopping-cart"></i> Volver al carrito
+      </a>
 
-    <div style="background: white; padding: 40px; border-radius: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); max-width: 600px; margin: 0 auto;">
-      <!-- Mensaje requerido -->
-      <h2 style="font-size: 22px; color: #333; margin-bottom: 20px;">
-        Checkout disponible en el próximo sprint
-      </h2>
-
-      <!-- Botones de navegación -->
-      <div style="display: flex; gap: 15px; justify-content: center; flex-wrap: wrap; margin-top: 25px;">
-        <!-- Botón Volver al carrito -->
-        <a href="/cart" class="btn-checkout" style="background-color: #6c757d; display: inline-block; text-decoration: none;">
-          <i class="fas fa-shopping-cart"></i> Volver al carrito
-        </a>
-
-        <!-- Botón Volver al inicio -->
-        <a href="/" class="btn-checkout" style="display: inline-block; text-decoration: none;">
-          <i class="fas fa-home"></i> Volver al inicio
-        </a>
-      </div>
+      <!-- Botón Volver al inicio -->
+      <a href="/" class="btn-checkout" style="display: inline-block; text-decoration: none;">
+        <i class="fas fa-home"></i> Volver al inicio
+      </a>
     </div>
-  </main>
-
-  <!-- Footer -->
-  <%- include('../partials/footer') %>
-
-</body>
-</html>
+  </div>
+</main>

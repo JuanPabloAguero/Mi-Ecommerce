@@ -1,69 +1,49 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Inicio - MiEcommerce</title>
-  <link rel="stylesheet" href="/css/styles.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-</head>
-<body>
-  
-  <!-- Header -->
-  <%- include('../partials/header') %>
+<!-- Categorías (Superior) -->
+<%- include('../partials/categoriesBar') %>
 
-  <!-- Categorías (Superior) -->
-  <%- include('../partials/categoriesBar') %>
-
-  <!-- ProductHero (Promociones) -->
-  <section class="hero-section">
-    <div class="hero-banner">
-      <div class="hero-info">
-        <h3>50% OFF en Combo Plus</h3>
-        <p>Canjeando 50.000 puntos MiEcommerce.</p>
-      </div>
+<!-- ProductHero (Promociones) -->
+<section class="hero-section">
+  <div class="hero-banner">
+    <div class="hero-info">
+      <h3>50% OFF en Combo Plus</h3>
+      <p>Canjeando 50.000 puntos MiEcommerce.</p>
     </div>
-    <div class="hero-banner">
-      <div class="hero-info">
-        <h3>50% OFF en HBO Max</h3>
-        <p>Canjeando 50.000 puntos MiEcommerce.</p>
-      </div>
+  </div>
+  <div class="hero-banner">
+    <div class="hero-info">
+      <h3>50% OFF en HBO Max</h3>
+      <p>Canjeando 50.000 puntos MiEcommerce.</p>
     </div>
-  </section>
+  </div>
+</section>
 
-  <!-- Grilla 1: Te puede interesar -->
-  <section class="products-section">
-    <h2>Te puede interesar</h2>
-    <div class="product-grid">
-      <% if (suggestedProducts && suggestedProducts.length > 0) { %>
-        <% suggestedProducts.forEach(product => { %>
-          <%- include('../partials/productCard', { product: product }) %>
-        <% }) %>
-      <% } else { %>
-        <p>No hay productos sugeridos disponibles en este momento.</p>
-      <% } %>
-    </div>
-  </section>
+<!-- Grilla 1: Te puede interesar -->
+<section class="products-section">
+  <h2>Te puede interesar</h2>
+  <div class="product-grid">
+    <% if (suggestedProducts && suggestedProducts.length > 0) { %>
+      <% suggestedProducts.forEach(product => { %>
+        <%- include('../partials/productCard', { product: product }) %>
+      <% }) %>
+    <% } else { %>
+      <p>No hay productos sugeridos disponibles en este momento.</p>
+    <% } %>
+  </div>
+</section>
 
-  <!-- Grilla 2: Los más pedidos -->
-  <section class="products-section" style="background-color: #f0f0f0;">
-    <h2>Los más pedidos</h2>
-    <div class="product-grid">
-      <% if (mostOrderedProducts && mostOrderedProducts.length > 0) { %>
-        <% mostOrderedProducts.forEach(product => { %>
-          <%- include('../partials/productCard', { product: product }) %>
-        <% }) %>
-      <% } else { %>
-        <p>No hay productos destacados disponibles.</p>
-      <% } %>
-    </div>
-  </section>
+<!-- Grilla 2: Los más pedidos -->
+<section class="products-section" style="background-color: #f0f0f0;">
+  <h2>Los más pedidos</h2>
+  <div class="product-grid">
+    <% if (mostOrderedProducts && mostOrderedProducts.length > 0) { %>
+      <% mostOrderedProducts.forEach(product => { %>
+        <%- include('../partials/productCard', { product: product }) %>
+      <% }) %>
+    <% } else { %>
+      <p>No hay productos destacados disponibles.</p>
+    <% } %>
+  </div>
+</section>
 
-  <!-- Categorías (Inferior) -->
-  <%- include('../partials/categoriesBar') %>
-
-  <!-- Footer -->
-  <%- include('../partials/footer') %>
-
-</body>
-</html>
+<!-- Categorías (Inferior) -->
+<%- include('../partials/categoriesBar') %>
