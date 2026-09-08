@@ -1,9 +1,9 @@
-const productModel = require('../models/productModel');
+const productService = require('../services/productService');
 
 const homeController = {
   index: (req, res) => {
-    const suggestedProducts = productModel.getSuggestedProducts(5);
-    const mostOrderedProducts = productModel.getMostOrderedProducts(10);
+    const suggestedProducts = productService.getSuggestedProducts(5);
+    const mostOrderedProducts = productService.getMostOrderedProducts(10);
     
     res.render('pages/index', { 
       title: 'Inicio',

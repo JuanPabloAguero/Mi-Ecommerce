@@ -1,70 +1,55 @@
 document.addEventListener('DOMContentLoaded', () => {
   const form = document.querySelector('form');
+  if (!form) return;
+
   const firstNameInput = document.getElementById('firstName');
   const lastNameInput = document.getElementById('lastName');
   const emailInput = document.getElementById('email');
   const passwordInput = document.getElementById('password');
 
-  if (!form) return;
-
   form.addEventListener('submit', (e) => {
-    let errors = [];
+    const errors = [];
 
-    // Obtener valores sin espacios al principio ni al final
     const firstName = firstNameInput ? firstNameInput.value.trim() : '';
     const lastName = lastNameInput ? lastNameInput.value.trim() : '';
     const email = emailInput ? emailInput.value.trim() : '';
-    const password = passwordInput ? passwordInput.value : ''; // Sin trim para evaluar espacios exactos
+    const password = passwordInput ? passwordInput.value : '';
 
-    // 1. Campos obligatorios no vacíos
-    if (!firstName) errors.push('El nombre es obligatorio.');
-    if (!lastName) errors.push('El apellido es obligatorio.');
-    if (!email) errors.push('El email es obligatorio.');
-    if (!password.trim()) errors.push('La contraseña es obligatoria.');
+    if (!firstName) errors.push('El nombre no puede estar en blanco.');
+    if (!lastName) errors.push('El apellido no puede estar en blanco.');
+    if (!email) errors.push('El email no puede estar en blanco.');
+    if (!password.trim()) errors.push('La contraseña no puede estar en blanco.');
 
-    // 2. Email válido
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (email && !emailRegex.test(email)) {
-      errors.push('El email ingresado no es válido.');
+      errors.push('El email no es válido.');
     }
 
-    // 3. Validaciones de Contraseña
     if (password) {
-      if (password.length < 8) {
-        errors.push('La contraseña debe tener al menos 8 caracteres.');
-      }
-      if (!/[a-zA-Z]/.test(password)) {
-        errors.push('La contraseña debe incluir al menos una letra.');
-      }
-      if (!/[0-9]/.test(password)) {
-        errors.push('La contraseña debe incluir al menos un número.');
-      }
-      const specialCharRegex = /[!@#$%^&*(),.?"':{}|<>]/;
-      if (!specialCharRegex.test(password)) {
+      if (password.length < 8) errors.push('La contraseña debe tener al menos 8 caracteres.');
+      if (!/[a-zA-Z]/.test(password)) errors.push('La contraseña debe incluir al menos una letra.');
+      if (!/[0-9]/.test(password)) errors.push('La contraseña debe incluir al menos un número.');
+      if (!/[!@#$%^&*(),.?"':{}|<>]/?.test(password)) {
         errors.push('La contraseña debe incluir al menos un carácter especial.');
       }
 
-      // Cadenas prohibidas
-      const lowerPass = password.toLowerCase();
-      const forbiddenStrings = ['password', '1234', 'qwerty', 'miecommerce']; // Incluye nombre del sitio
-      if (firstName) forbiddenStrings.push(firstName.toLowerCase());
+      const forbidden = ['password', '1234', 'qwerty', 'miecommerce'];
+      if (firstName) forbidden.push(firstName.toLowerCase());
 
-      for (const forbidden of forbiddenStrings) {
-        if (forbidden && lowerPass.includes(forbidden)) {
-          errors.push(`La contraseña no puede contener la palabra o secuencia prohibida: "${forbidden}".`);
+      for (const str of forbidden) {
+        if (password.toLowerCase().includes(str)) {
+          errors.push(`La contraseña no puede contener la cadena prohibida: "${str}".`);
           break;
         }
       }
 
-      // Contraseña no igual al email
       if (email && password === email) {
-        errors.push('La contraseña no puede ser igual al correo electrónico.');
+        errors.push('La contraseña no puede ser igual al email.');
       }
     }
 
-    // Si existen errores, se previene el envío y se muestran
     if (errors.length > 0) {
-      e.preventDefault();
+      e.preventDefault(); // Prevenir envío del formulario
       
       let errorContainer = document.getElementById('error-list');
       if (!errorContainer) {

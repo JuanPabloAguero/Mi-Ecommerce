@@ -1,8 +1,12 @@
 const express = require('express');
 const router = express.Router();
 const productController = require('../controllers/productController');
+const normalizeId = require('../middlewares/normalizeId');
 
-// Al usar /:id, Express captura cualquier ID (ej: /products/1, /products/2)
-router.get('/:id', productController.detail);
+// Ruta principal del catálogo: GET /products
+router.get('/', productController.list);
+
+// Ruta detalle del producto: GET /products/:id
+router.get('/:id', normalizeId, productController.detail);
 
 module.exports = router;

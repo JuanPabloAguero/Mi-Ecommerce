@@ -1,0 +1,15 @@
+<section class="products-section">
+  <h2>Resultados de búsqueda para: "<%= query %>"</h2>
+
+  <% if (products && products.length > 0) { %>
+    <div class="product-grid">
+      <% products.forEach(product => { %>
+        <%- include('../partials/productCard', { product: product }) %>
+      <% }) %>
+    </div>
+  <% } else { %>
+    <div style="padding: 40px 0; text-align: center;">
+      <p>No se encontraron productos que coincidan con tu búsqueda.</p>
+    </div>
+  <% } %>
+</section>

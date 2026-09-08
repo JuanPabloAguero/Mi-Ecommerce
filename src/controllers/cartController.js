@@ -1,97 +1,50 @@
-const productModel = require('../models/productModel');
+// src/controllers/cartController.js
+const cartService = require('../services/cartService');
 
 const cartController = {
-  // Escenario 2, 5 y 6: Ver carrito y calcular total
-  cart: (req, res) => {
-    const sessionCart = req.session.cart || [];
-
-    // Obtener todos los productos reales del JSON
-    const allProducts = productModel.findAll();
-    
-    // Mapear combinando la sesión con los datos del JSON
-    const cartItems = sessionCart.map(item => {
-      const product = allProducts.find(p => Number(p.id) === Number(item.productId));
-      if (!product) return null;
-      
-      return {
-        ...product,
-        quantity: item.quantity,
-        subtotal: product.price * item.quantity
-      };
-    }).filter(item => item !== null); // Eliminar posibles nulos
-
-    const total = cartItems.reduce((acc, item) => acc + item.subtotal, 0);
+  // Ver carrito con detalle de productos y monto total
+  showCart: (req, res) => {
+    const { cartItems, total } = cartService.getCartDetail(req.session);
 
     res.render('pages/cart', { 
-      title: 'Carrito de Compras',
+      title: 'Carrito de Compras', 
       cartItems, 
       total 
     });
   },
 
-  // Escenario 1: Agregar producto
+  // Agregar producto
   add: (req, res) => {
     const { productId } = req.body;
-    const product = productModel.findByPk(productId);
+    const added = cartService.addItem(req.session, productId);
 
-    // Si no existe o no tiene stock, rechazar
-    if (!product || product.stock <= 0) {
+    if (!added) {
       return res.redirect(`/products/${productId}`);
     }
 
-    const cart = req.session.cart || [];
-    const existingIndex = cart.findIndex(item => Number(item.productId) === Number(productId));
-
-    if (existingIndex !== -1) {
-      // Validar que al sumar 1 no supere el stock disponible
-      if (cart[existingIndex].quantity < product.stock) {
-        cart[existingIndex].quantity += 1;
-      }
-    } else {
-      cart.push({ productId: Number(productId), quantity: 1 });
-    }
-
-    req.session.cart = cart;
     res.redirect('/cart');
   },
 
-  // Escenario 3: Aumentar / Disminuir
+  // Aumentar / Disminuir cantidad
   updateQuantity: (req, res) => {
     const { productId, action } = req.body;
-    let cart = req.session.cart || [];
+    cartService.updateQuantity(req.session, productId, action);
 
-    const index = cart.findIndex(item => item.productId == productId);
-    
-    if (index !== -1) {
-      const product = productModel.findByPk(productId);
-
-      if (action === 'increase') {
-        // Solo incrementa si la cantidad en carrito es menor que el stock
-        if (product && cart[index].quantity < product.stock) {
-          cart[index].quantity += 1;
-        }
-      } else if (action === 'decrease') {
-        cart[index].quantity -= 1;
-        if (cart[index].quantity <= 0) {
-          cart.splice(index, 1);
-        }
-      }
-    }
-
-    req.session.cart = cart;
     res.redirect('/cart');
   },
 
-  // Escenario 3: Quitar ítem completo
+  // Quitar ítem completo
   remove: (req, res) => {
     const { productId } = req.body;
-    req.session.cart = (req.session.cart || []).filter(item => item.productId != productId);
+    cartService.removeItem(req.session, productId);
+
     res.redirect('/cart');
   },
 
-  // Escenario 4: Vaciar carrito
+  // Vaciar carrito
   clear: (req, res) => {
-    req.session.cart = [];
+    cartService.clearCart(req.session);
+
     res.redirect('/cart');
   }
 };

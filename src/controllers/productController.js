@@ -1,22 +1,27 @@
-const productModel = require('../models/productModel');
+const productService = require('../services/productService');
 
 const productController = {
+  // Función para listar todos los productos con soporte de ordenamiento
+  list: (req, res) => {
+    const { sort } = req.query;
+    const allProducts = productService.getAllProducts();
+    
+    // Delegar el ordenamiento al servicio
+    const products = productService.sortProductsByPrice(allProducts, sort);
+
+    res.render('pages/products', {
+      title: 'Todos los Productos',
+      products,
+      currentSort: sort || ''
+    });
+  },
+
   // Mostrar detalles de un producto específico
   detail: (req, res) => {
-    const { id } = req.params;
-    const product = productModel.findByPk(id);
+    // Tomar el producto ya validado por el middleware
+    const product = req.product;
+    const relatedProducts = productService.getRelatedProducts(product, 4);
 
-    // Escenario 2 & BONUS: Producto inexistente -> renderizar vista 404
-    if (!product) {
-      return res.status(404).render('pages/404', { 
-        message: 'El producto que buscas no existe o ha sido removido.' 
-      });
-    }
-
-    // Obtener productos relacionados para la sección inferior
-    const relatedProducts = productModel.getRelatedProducts(product, 4);
-
-    // Escenario 1: Producto existente
     res.render('pages/product', { 
       title: product.name,
       product,
@@ -27,12 +32,24 @@ const productController = {
   // Mostrar productos de una categoría
   category: (req, res) => {
     const { category } = req.params;
-    const products = productModel.findByCategory(category);
+    const products = productService.getProductsByCategory(category);
 
     res.render('pages/category', {
       title: `Categoría: ${category}`,
       categoryName: category,
       products
+    });
+  },
+
+  // Buscar productos
+  search: (req, res) => {
+    const { query } = req.query;
+    const products = productService.searchProducts(query);
+
+    res.render('pages/search', {
+      title: query ? `Resultados para "${query}"` : 'Búsqueda de productos',
+      products,
+      query: query || ''
     });
   }
 };

@@ -1,5 +1,5 @@
 const checkoutController = {
-  checkout: (req, res) => {
+  showCheckout: (req, res) => {
     res.render('pages/checkout', { 
       title: 'Finalizar Compra' 
     });

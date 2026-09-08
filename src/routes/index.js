@@ -6,18 +6,17 @@ const categoryRoutes = require('./categoryRoutes');
 const cartRoutes = require('./cartRoutes');
 const checkoutRoutes = require('./checkoutRoutes');
 const authRoutes = require('./authRoutes');
+const searchRoutes = require('./searchRoutes');
 
 const router = express.Router();
 
-/**
- * Router principal de la aplicación.
- * Agrupa todas las rutas del ecommerce bajo sus prefijos correspondientes.
- */
+// Router principal de la aplicación, agrupa todas las rutas bajo sus prefijos correspondientes
 router.use('/', homeRoutes);
 router.use('/products', productRoutes);
 router.use('/categories', categoryRoutes);
 router.use('/cart', cartRoutes);
 router.use('/checkout', checkoutRoutes);
 router.use('/', authRoutes);
+router.use('/search', searchRoutes);
 
 module.exports = router;

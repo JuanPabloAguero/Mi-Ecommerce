@@ -6,27 +6,27 @@ const expressLayouts = require('express-ejs-layouts');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+// Motor de plantillas EJS y Express Layouts
+app.set('view engine', 'ejs');
+app.set('views', path.join(__dirname, 'src/views'));
+app.set('layout', 'layouts/main'); // Ruta relativa desde src/views
+app.use(expressLayouts); // Usar express-ejs-layouts
+
+// Archivos estáticos
+app.use(express.static(path.join(__dirname, 'public')));
+
 // Configuración de Middlewares
 app.use(express.urlencoded({ extended: false })); // Para procesar envíos POST de formularios
 app.use(express.json());
 
 // Configurar express-session
-app.use(session({
-  secret: 'miEcommerceSecretKey',
-  resave: false,
-  saveUninitialized: true
-}));
-
-// Motor de plantillas EJS y Express Layouts
-app.set('view engine', 'ejs');
-app.set('views', path.join(__dirname, 'src/views'));
-
-// Usar express-ejs-layouts
-app.use(expressLayouts);
-app.set('layout', 'layouts/main'); // Ruta relativa desde src/views
-
-// Archivos estáticos
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(
+  session({
+    secret: 'miEcommerceSecretKey',
+    resave: false,
+    saveUninitialized: true
+  })
+);
 
 // Middleware para inicializar el carrito en la sesión si no existe y calcular la cantidad total para el badge
 app.use((req, res, next) => {
@@ -43,21 +43,20 @@ app.use((req, res, next) => {
   next();
 });
 
-// Importar enrutador principal
+// Importar enrutador principal, middlewares de carrito y de error
 const routes = require('./src/routes');
+const cartLocals = require('./src/middlewares/cartLocals');
+const errorHandler = require('./src/middlewares/errorHandler');
 
 // Rutas de la aplicación agrupadas en el router principal
 app.use('/', routes);
 
-// Middleware 404 (Debe ir AL FINAL de todas las rutas, "como si fuera un default de switch")
-app.use((req, res, next) => {
-  res.status(404).render('pages/404', { title: 'Página no encontrada' });
-});
+// Middleware para inicializar el carrito y exponer cartCount a EJS
+app.use(cartLocals);
 
-// Middleware Global de Error 500 (Debe llevar obligatoriamente 4 parámetros)
-app.use((err, req, res, next) => {
-  res.status(500).render('pages/500', { title: 'Error interno del servidor' });
-});
+// Middlewares para manejo de errores
+app.use(errorHandler.notFound);
+app.use(errorHandler.serverError);
 
 // Servidor
 app.listen(PORT, () => {

@@ -134,6 +134,8 @@ footer {
   position: relative;
   width: 100%;
   max-width: 650px;
+  display: flex;
+  align-items: center;
 }
 
 .search-bar-input {
@@ -147,11 +149,22 @@ footer {
   color: #666;
 }
 
-.search-bar-icon {
+/* Botón que contiene la lupa, centrado verticalmente */
+.search-bar-btn {
   position: absolute;
   right: 12px;
   top: 50%;
   transform: translateY(-50%);
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.search-bar-icon {
   color: #888;
   font-size: 13px;
   pointer-events: none;
@@ -320,7 +333,7 @@ footer {
   margin-bottom: 8px;
 }
 
-/* Banner de Promociones (Product Hero) */
+/* --- Banner de Promociones --- */
 .hero-section {
   background-color: #1abc9c;
   padding: 40px 50px;
@@ -330,27 +343,58 @@ footer {
 
 .hero-banner {
   flex: 1;
-  background-color: #222;
+  height: 220px;
   border-radius: 15px;
-  height: 200px;
-  display: flex;
-  align-items: flex-end;
-  padding: 20px;
-  color: white;
   position: relative;
   overflow: hidden;
-  /* Aquí irían las imágenes de fondo reales con background-image */
-  background-image: linear-gradient(to right, rgba(0,0,0,0.8), rgba(0,0,0,0.2)); 
+  display: flex;
+  align-items: flex-end; /* Posiciona el texto en la parte inferior */
+  padding: 20px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+/* Superposición oscura (Linear Gradient) sobre la imagen */
+.hero-banner::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  /* Oscurece el fondo desde abajo hacia arriba para resaltar el texto */
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.85) 0%, rgba(0, 0, 0, 0) 70%);
+  z-index: 1;
+}
+
+/* Texto sobrepuesto al degradado */
+.hero-info {
+  position: relative;
+  z-index: 2; /* Se coloca por encima del degradado */
+  color: #ffffff;
 }
 
 .hero-info h3 {
-  margin: 0 0 5px 0;
-  font-size: 18px;
+  margin: 0 0 6px 0;
+  font-size: 20px;
+  font-weight: bold;
 }
 
 .hero-info p {
   margin: 0;
   font-size: 14px;
+}
+
+/* --- Imágenes de fondo específicas --- */
+.promo-combo-plus {
+  background-image: url('/images/disney-banner.jpg');
+  background-size: cover;
+  background-position: center;
+}
+
+.promo-hbo-max {
+  background-image: url('/images/hbo-max-banner.jpg');
+  background-size: cover;
+  background-position: center;
 }
 
 /* Grillas de Productos */
@@ -762,6 +806,26 @@ footer {
 
 .btn-checkout:hover {
   background-color: #3f494d;
+}
+
+/* Botón secundario para ver catálogo completo / acciones rápidas */
+.btn-view-all {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background-color: #555;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 20px;
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 500;
+  transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.btn-view-all:hover {
+  background-color: #16a085;
+  transform: translateY(-2px);
 }
 
 /* =========================================
