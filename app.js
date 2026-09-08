@@ -48,11 +48,11 @@ const routes = require('./src/routes');
 const cartLocals = require('./src/middlewares/cartLocals');
 const errorHandler = require('./src/middlewares/errorHandler');
 
-// Rutas de la aplicación agrupadas en el router principal
-app.use('/', routes);
-
 // Middleware para inicializar el carrito y exponer cartCount a EJS
 app.use(cartLocals);
+
+// Rutas de la aplicación agrupadas en el router principal
+app.use('/', routes);
 
 // Middlewares para manejo de errores
 app.use(errorHandler.notFound);
