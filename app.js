@@ -28,21 +28,6 @@ app.use(
   })
 );
 
-// Middleware para inicializar el carrito en la sesión si no existe y calcular la cantidad total para el badge
-app.use((req, res, next) => {
-  if (!req.session.cart) {
-    req.session.cart = []; // req.session.cart iniciará como array vacío []
-  }
-
-  // Sumar la propiedad "quantity" de todos los ítems agregados
-  const totalItems = req.session.cart.reduce((sum, item) => sum + item.quantity, 0);
-
-  // res.locals hace que la variable esté disponible en TODAS las plantillas EJS automáticamente
-  res.locals.cartCount = totalItems;
-
-  next();
-});
-
 // Importar enrutador principal, middlewares de carrito y de error
 const routes = require('./src/routes');
 const cartLocals = require('./src/middlewares/cartLocals');
