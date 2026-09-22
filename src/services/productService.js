@@ -1,15 +1,14 @@
 const productModel = require('../models/productModel');
 
 const productService = {
-  // Obtener todos los productos
+  // Obtener todos los productos desde la base de datos
   getAllProducts: () => {
     return productModel.findAll();
   },
 
-  // Obtener producto por su ID
+  // Obtener producto por su ID directamente desde la base de datos
   getProductById: (id) => {
-    const products = productModel.findAll();
-    return products.find(product => product.id === Number(id));
+    return productModel.findById(id);
   },
 
   // Obtener productos por categoría
