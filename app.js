@@ -2,9 +2,14 @@ const express = require('express');
 const path = require('path');
 const session = require('express-session');
 const expressLayouts = require('express-ejs-layouts');
+const runMigration = require('./db/migrate');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+
+// Ejecutar migración inicial si products.json existe
+// Gracias a la instrucción INSERT OR IGNORE, la migración no duplicará registros ni fallará aunque se ejecute múltiples veces
+runMigration();
 
 // Motor de plantillas EJS y Express Layouts
 app.set('view engine', 'ejs');

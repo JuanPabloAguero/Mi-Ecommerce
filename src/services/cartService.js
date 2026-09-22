@@ -18,14 +18,14 @@ const cartService = {
     return cart.reduce((sum, item) => sum + item.quantity, 0);
   },
 
-  // Obtener los productos detallados con subtotal y el total del monto (para la vista del carrito)
+  // Obtener los productos detallados con subtotal y el total del monto (para la vista del carrito) (desde SQLite mediante productService)
   getCartDetail: (session) => {
     const sessionCart = cartService.getCart(session);
-    const allProducts = productService.getAllProducts();
 
     const cartItems = sessionCart
       .map(item => {
-        const product = allProducts.find(p => Number(p.id) === Number(item.productId));
+        // Validar y obtener los datos reales del producto directamente desde la DB mediante productService
+        const product = productService.getProductById(item.productId);
         if (!product) return null;
 
         return {
@@ -36,6 +36,7 @@ const cartService = {
       })
       .filter(item => item !== null);
 
+    // Calcular total acumulado con datos reales
     const total = cartItems.reduce((acc, item) => acc + item.subtotal, 0);
 
     return { cartItems, total };

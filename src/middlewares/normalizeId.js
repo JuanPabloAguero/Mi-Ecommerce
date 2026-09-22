@@ -13,6 +13,8 @@ const normalizeId = (req, res, next) => {
   }
 
   const numericId = Number(id);
+
+  // Validar que el producto existe en la base de datos
   const product = productService.getProductById(numericId);
 
   // Escenario 2: ID numérico pero inexistente -> Status 404
