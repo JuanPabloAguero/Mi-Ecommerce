@@ -135,10 +135,18 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  let reconnectTimer = null;
+
   function connect() {
+    // Cancelar cualquier temporizador de reconexión pendiente para evitar llamadas duplicadas
+    if (reconnectTimer) {
+      clearTimeout(reconnectTimer);
+      reconnectTimer = null;
+    }
+
     const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
     const wsUrl = `${protocol}//${window.location.host}`;
-    const ws = new WebSocket(wsUrl);
+    let ws = new WebSocket(wsUrl);
 
     // Cambio de estado al establecer la conexión
     ws.onopen = () => {
@@ -157,7 +165,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // Validación del protocolo estandarizado
         if (data.type === 'cartUpdated' && data.payload) {
           const { cartCount, cartItems, total } = data.payload;
-
+          
           const previousCount = cartBadge ? Number(cartBadge.textContent) || 0 : 0;
 
           // 1. Actualizar badge del header
@@ -180,20 +188,37 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     };
 
-    // Cambio de estado al perder la conexión
+    // Cambio de estado y reintento automático al perder la conexión
     ws.onclose = () => {
       if (statusText) statusText.textContent = 'Desconectado';
       if (statusDot) {
         statusDot.classList.remove('connected');
         statusDot.classList.add('disconnected');
       }
-      setTimeout(connect, 3000);
+
+      // Desvincular eventos del socket viejo
+      ws.onopen = null;
+      ws.onmessage = null;
+      ws.onerror = null;
+      ws.onclose = null;
+      ws = null;
+
+      // Intentar reconectar automáticamente en 3 segundos
+      reconnectTimer = setTimeout(() => {
+        connect();
+      }, 3000);
     };
 
     ws.onerror = (error) => {
-      console.error('[WebSocket] Error:', error);
+      console.error('[WebSocket] Error en la conexión:', error);
+      // Forzar el cierre para que se gatille onclose de manera controlada
       ws.close();
     };
+  }
+
+  // Mostrar el toast si el servidor indicó que esta carga viene de vaciar el carrito
+  if (toastElem && toastElem.dataset.showOnLoad === 'true') {
+    showCartEmptyNotification();
   }
 
   connect();

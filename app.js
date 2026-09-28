@@ -5,6 +5,7 @@ const path = require('path');
 const session = require('express-session');
 const expressLayouts = require('express-ejs-layouts');
 const runMigration = require('./db/migrate');
+const eventService = require('./src/services/eventService');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -55,33 +56,22 @@ const server = http.createServer(app); // 1. Crear el servidor HTTP wrapping Exp
 
 const wss = new WebSocket.Server({ server }); // 2. Instanciar el servidor WebSocket ligado al servidor HTTP
 
-const clients = new Set(); // 3. Colección para almacenar y gestionar las conexiones activas
-
+// Delegar registro y eliminación de sockets al EventService
 wss.on("connection", (ws, req) => {
-  // Agregar la nueva conexión a la colección
-  clients.add(ws);
-  console.log(`[WebSocket] Cliente conectado. Total activos: ${clients.size}`);
+  eventService.addClient(ws);
 
-  // Manejo de desconexión del cliente
   ws.on("close", () => {
-    clients.delete(ws);
-    console.log(`[WebSocket] Cliente desconectado. Total activos: ${clients.size}`);
+    eventService.removeClient(ws);
   });
 
-  // Manejo de errores en la conexión
   ws.on("error", (error) => {
     console.error("[WebSocket] Error en la conexión:", error);
   });
 });
 
-// Función global o adjunta a app para transmitir a todos los clientes
-app.set('broadcast', (data) => {
-  const message = JSON.stringify(data);
-  clients.forEach((client) => {
-    if (client.readyState === WebSocket.OPEN) {
-      client.send(message);
-    }
-  });
+// Adjuntar el método broadcast del servicio a app si los controladores lo consumen desde req.app
+app.set('broadcast', (type, payload) => {
+  eventService.broadcast(type, payload);
 });
 
 // Servidor

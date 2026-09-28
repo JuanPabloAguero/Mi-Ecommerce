@@ -22,7 +22,8 @@
 <script src="/js/websocket.js"></script>
 
 <!-- Notificación Toast para Carrito Vacío -->
-<div id="cart-toast-notification" class="cart-toast hidden">
+<div id="cart-toast-notification" class="cart-toast hidden"
+     data-show-on-load="<%= (typeof showEmptyToast !== 'undefined' && showEmptyToast) ? 'true' : 'false' %>">
   <i class="fas fa-info-circle"></i>
   <span>El carrito ha sido vaciado.</span>
 </div>
