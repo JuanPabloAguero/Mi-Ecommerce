@@ -1,4 +1,6 @@
 const express = require('express');
+const http = require("http");
+const WebSocket = require("ws");
 const path = require('path');
 const session = require('express-session');
 const expressLayouts = require('express-ejs-layouts');
@@ -48,9 +50,43 @@ app.use('/', routes);
 app.use(errorHandler.notFound);
 app.use(errorHandler.serverError);
 
+// Configurar WebSocket
+const server = http.createServer(app); // 1. Crear el servidor HTTP wrapping Express
+
+const wss = new WebSocket.Server({ server }); // 2. Instanciar el servidor WebSocket ligado al servidor HTTP
+
+const clients = new Set(); // 3. Colección para almacenar y gestionar las conexiones activas
+
+wss.on("connection", (ws, req) => {
+  // Agregar la nueva conexión a la colección
+  clients.add(ws);
+  console.log(`[WebSocket] Cliente conectado. Total activos: ${clients.size}`);
+
+  // Manejo de desconexión del cliente
+  ws.on("close", () => {
+    clients.delete(ws);
+    console.log(`[WebSocket] Cliente desconectado. Total activos: ${clients.size}`);
+  });
+
+  // Manejo de errores en la conexión
+  ws.on("error", (error) => {
+    console.error("[WebSocket] Error en la conexión:", error);
+  });
+});
+
+// Función global o adjunta a app para transmitir a todos los clientes
+app.set('broadcast', (data) => {
+  const message = JSON.stringify(data);
+  clients.forEach((client) => {
+    if (client.readyState === WebSocket.OPEN) {
+      client.send(message);
+    }
+  });
+});
+
 // Servidor
-app.listen(PORT, () => {
-    console.log(`Servidor corriendo en http://localhost:${PORT}`);
+server.listen(PORT, () => {
+  console.log(`Servidor HTTP y WebSocket escuchando en el puerto ${PORT}`);
 });
 
 module.exports = app;

@@ -828,6 +828,58 @@ footer {
   transform: translateY(-2px);
 }
 
+/* Estilos para distinguir entre el estado conectado y desconectado de WebSockets */
+.status-container {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.status-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  display: inline-block;
+  transition: background-color 0.3s ease;
+}
+
+.status-dot.connected {
+  background-color: #28a745; /* Verde */
+  box-shadow: 0 0 6px rgba(40, 167, 69, 0.6);
+}
+
+.status-dot.disconnected {
+  background-color: #dc3545; /* Rojo */
+  box-shadow: 0 0 6px rgba(220, 53, 69, 0.6);
+}
+
+/* Notificación Toast para Carrito Vacío */
+.cart-toast {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background-color: #323232;
+  color: #fff;
+  padding: 12px 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  z-index: 1000;
+  opacity: 1;
+  transition: opacity 0.4s ease, transform 0.4s ease;
+  transform: translateY(0);
+}
+
+.cart-toast.hidden {
+  opacity: 0;
+  transform: translateY(20px);
+  pointer-events: none;
+}
+
 /* =========================================
    MEDIA QUERIES PARA DISPOSITIVOS MÓVILES
    ========================================= */

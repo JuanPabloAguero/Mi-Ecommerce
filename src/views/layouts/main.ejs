@@ -12,6 +12,21 @@
 </head>
 <body>
 
+  <!-- Mostrar el estado de la conexión en la interfaz -->
+<div id="ws-status-container" class="status-container">
+  <span id="ws-status-dot" class="status-dot disconnected"></span>
+  <span id="ws-status-text">Desconectado</span>
+</div>
+
+<!-- Script del cliente para WebSockets -->
+<script src="/js/websocket.js"></script>
+
+<!-- Notificación Toast para Carrito Vacío -->
+<div id="cart-toast-notification" class="cart-toast hidden">
+  <i class="fas fa-info-circle"></i>
+  <span>El carrito ha sido vaciado.</span>
+</div>
+
   <%- include('../partials/header') %>
 
   <%- body %>

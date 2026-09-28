@@ -3,80 +3,83 @@
 
   <h1 class="cart-title">Productos en tu Carrito</h1>
 
-  <% if (cartItems && cartItems.length > 0) { %>
-    <!-- Escenario 4: Botón Vaciar Carrito -->
-    <form action="/cart/clear" method="POST" style="text-align: right; margin-bottom: 15px;">
-      <button type="submit" class="btn-remove">Vaciar carrito</button>
-    </form>
+  <!-- Contenedor dinámico del carrito -->
+   <div id="cart-content-wrapper">
+    <% if (cartItems && cartItems.length > 0) { %>
+      <!-- Botón Vaciar Carrito -->
+      <form action="/cart/clear" method="POST" style="text-align: right; margin-bottom: 15px;">
+        <button type="submit" class="btn-remove">Vaciar carrito</button>
+      </form>
 
-    <!-- Escenario 2: Listado dinámico -->
-    <section class="cart-list">
-      <% cartItems.forEach(item => { %>
-        <article class="cart-item">
-          <div class="cart-item-info">
-            <img src="<%= item.image %>" alt="<%= item.name %>" style="width:50px; height:50px; object-fit:cover;">
-            <span class="cart-item-title"><%= item.name %></span>
-            <!-- Texto con el stock total disponible -->
-              <small style="color: #666; font-size: 12px; margin-top: 3px;">
-                Stock disponible: <strong><%= item.stock %></strong>
-              </small>
-          </div>
-
-          <div class="cart-item-controls">
-            <!-- Quitar producto -->
-            <form action="/cart/remove" method="POST" style="display:inline;">
-              <input type="hidden" name="productId" value="<%= item.id %>">
-              <button type="submit" class="btn-remove">Quitar</button>
-            </form>
-
-            <!-- Escenario 3: Controles ➕ y ➖ -->
-            <div class="quantity-picker" style="display:flex; align-items:center; gap:5px;">
-              
-              <!-- 1. Formulario Decrementar (-) -->
-              <form action="/cart/update" method="POST" style="display:inline;">
-                <input type="hidden" name="productId" value="<%= item.id %>">
-                <input type="hidden" name="action" value="decrease">
-                <button type="submit" class="quantity-btn">-</button>
-              </form>
-
-              <!-- Cantidad actual -->
-              <span class="quantity-value"><%= item.quantity %></span>
-
-              <!-- 2. Formulario Incrementar (+) validando stock -->
-              <form action="/cart/update" method="POST" style="display:inline;">
-                <input type="hidden" name="productId" value="<%= item.id %>">
-                <input type="hidden" name="action" value="increase">
-                
-                <% if (item.quantity >= item.stock) { %>
-                  <button type="button" class="quantity-btn disabled" disabled title="Límite de stock alcanzado">+</button>
-                <% } else { %>
-                  <button type="submit" class="quantity-btn">+</button>
-                <% } %>
-              </form>
-
+      <!-- Listado dinámico -->
+      <section class="cart-list" id="cart-items-list">
+        <% cartItems.forEach(item => { %>
+          <article class="cart-item" data-id="<%= item.id %>">
+            <div class="cart-item-info">
+              <img src="<%= item.image %>" alt="<%= item.name %>" style="width:50px; height:50px; object-fit:cover;">
+              <span class="cart-item-title"><%= item.name %></span>
+              <!-- Texto con el stock total disponible -->
+                <small style="color: #666; font-size: 12px; margin-top: 3px;">
+                  Stock disponible: <strong><%= item.stock %></strong>
+                </small>
             </div>
 
-            <!-- Precio y Subtotal -->
-            <span class="cart-item-price">$<%= item.subtotal.toLocaleString('es-AR') %></span>
-          </div>
-        </article>
-      <% }) %>
-    </section>
+            <div class="cart-item-controls">
+              <!-- Quitar producto -->
+              <form action="/cart/remove" method="POST" style="display:inline;">
+                <input type="hidden" name="productId" value="<%= item.id %>">
+                <button type="submit" class="btn-remove">Quitar</button>
+              </form>
 
-    <!-- Escenario 5: Total General -->
-    <section class="cart-summary">
-      <div class="total-points">
-        <span>Total General</span>
-        <strong>$<%= total.toLocaleString('es-AR') %></strong>
-      </div>
-      <a href="/checkout" class="btn-checkout">Ir a Pagar</a>
-    </section>
+              <!-- Controles ➕ y ➖ -->
+              <div class="quantity-picker" style="display:flex; align-items:center; gap:5px;">
+                
+                <!-- Formulario Decrementar (-) -->
+                <form action="/cart/update" method="POST" style="display:inline;">
+                  <input type="hidden" name="productId" value="<%= item.id %>">
+                  <input type="hidden" name="action" value="decrease">
+                  <button type="submit" class="quantity-btn">-</button>
+                </form>
 
-  <% } else { %>
-    <!-- Escenario 6: Carrito Vacío -->
-    <section style="text-align: center; padding: 40px 0;">
-      <p style="font-size: 18px; color: #666; margin-bottom: 20px;">Tu carrito de compras está vacío.</p>
-      <a href="/" class="btn-checkout" style="display: inline-block;">Explorar productos</a>
-    </section>
-  <% } %>
+                <!-- Cantidad actual -->
+                <span class="quantity-value" id="quantity-<%= item.id %>"><%= item.quantity %></span>
+
+                <!-- Formulario Incrementar (+) validando stock -->
+                <form action="/cart/update" method="POST" style="display:inline;">
+                  <input type="hidden" name="productId" value="<%= item.id %>">
+                  <input type="hidden" name="action" value="increase">
+                  
+                  <% if (item.quantity >= item.stock) { %>
+                    <button type="button" class="quantity-btn disabled" disabled title="Límite de stock alcanzado">+</button>
+                  <% } else { %>
+                    <button type="submit" class="quantity-btn">+</button>
+                  <% } %>
+                </form>
+
+              </div>
+
+              <!-- Precio y Subtotal -->
+              <span class="cart-item-price" id="subtotal-<%= item.id %>">$<%= item.subtotal.toLocaleString('es-AR') %></span>
+            </div>
+          </article>
+        <% }) %>
+      </section>
+
+      <!-- Total General -->
+      <section class="cart-summary">
+        <div class="total-points">
+          <span>Total General</span>
+          <strong id="cart-total">$<%= total.toLocaleString('es-AR') %></strong>
+        </div>
+        <a href="/checkout" class="btn-checkout">Ir a Pagar</a>
+      </section>
+
+    <% } else { %>
+      <!-- Carrito Vacío -->
+      <section style="text-align: center; padding: 40px 0;">
+        <p style="font-size: 18px; color: #666; margin-bottom: 20px;">Tu carrito de compras está vacío.</p>
+        <a href="/" class="btn-checkout" style="display: inline-block;">Explorar productos</a>
+      </section>
+    <% } %>
+  </div>
 </main>
