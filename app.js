@@ -6,6 +6,9 @@ const session = require('express-session');
 const expressLayouts = require('express-ejs-layouts');
 const runMigration = require('./db/migrate');
 const eventService = require('./src/services/eventService');
+const cors = require('cors');
+const apiRoutes = require('./src/routes/api');
+const apiErrorHandler = require('./src/middlewares/apiErrorHandler');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -23,9 +26,17 @@ app.use(expressLayouts); // Usar express-ejs-layouts
 // Archivos estáticos
 app.use(express.static(path.join(__dirname, 'public')));
 
+// CORS solo para la API (también responde los preflight OPTIONS)
+app.use('/api', cors());
+
 // Configuración de Middlewares
 app.use(express.urlencoded({ extended: false })); // Para procesar envíos POST de formularios
 app.use(express.json());
+
+// Rutas de la API (JSON) + sus manejadores de error
+app.use('/api', apiRoutes);
+app.use('/api', apiErrorHandler.notFound);
+app.use('/api', apiErrorHandler.serverError);
 
 // Configurar express-session
 app.use(
