@@ -18,7 +18,13 @@
     
     <form action="/register" method="POST" class="register-form" novalidate>
       <!-- Contenedor para mensajes de error accesibles -->
-      <div id="error-list" role="alert" aria-live="assertive"></div>
+      <div id="error-list" role="alert" aria-live="assertive">
+        <% if (typeof errors !== 'undefined' && errors.length) { %>
+          <ul>
+            <% errors.forEach(function (e) { %><li><%= e %></li><% }) %>
+          </ul>
+        <% } %>
+      </div>
 
       <!-- Campo Nombre -->
       <div class="form-group">
@@ -27,6 +33,7 @@
           type="text" 
           id="firstName" 
           name="firstName" 
+          value="<%= (typeof oldData !== 'undefined' && oldData.firstName) || '' %>" 
           placeholder="Tu nombre" 
           autocomplete="given-name" 
           required
@@ -40,6 +47,7 @@
           type="text" 
           id="lastName" 
           name="lastName" 
+          value="<%= (typeof oldData !== 'undefined' && oldData.lastName) || '' %>"
           placeholder="Tu apellido" 
           autocomplete="family-name" 
           required
@@ -53,6 +61,7 @@
           type="email" 
           id="email" 
           name="email" 
+          value="<%= (typeof oldData !== 'undefined' && oldData.email) || '' %>"
           placeholder="ejemplo@correo.com" 
           autocomplete="username" 
           required
