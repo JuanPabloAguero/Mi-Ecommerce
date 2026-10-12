@@ -48,8 +48,27 @@ async function login(email, password) {
   return { token, user };
 }
 
+// Verifica la firma y la expiración del JWT. Devuelve el usuario identificado.
+function verifyAccessToken(token) {
+  try {
+    const decoded = jwt.verify(token, JWT_SECRET, { algorithms: ['HS256'] });
+
+    return {
+      id: Number(decoded.sub), // sub viaja como string
+      email: decoded.email,
+      role: decoded.role
+    };
+  } catch (error) {
+    if (error.name === 'TokenExpiredError') {
+      throw authError('TOKEN_EXPIRED');
+    }
+    throw authError('INVALID_TOKEN');
+  }
+}
+
 module.exports = {
   authenticate,
   generateToken,
-  login
+  login,
+  verifyAccessToken
 };
