@@ -15,9 +15,11 @@ router.get('/', (req, res) => {
 // Ruta de registro y login
 router.use('/auth', authApiRoutes);
 
-// Rutas protegidas: exigen un JWT válido
-router.use('/products', verifyToken, productsApiRoutes);
-router.use('/categories', verifyToken, categoriesApiRoutes);
+// La protección de estos recursos se define dentro de cada archivo de rutas
+router.use('/products', productsApiRoutes);
+router.use('/categories', categoriesApiRoutes);
+
+// Solo requiere estar autenticado
 router.use('/stats', verifyToken, statsApiRoutes);
 
 module.exports = router;
