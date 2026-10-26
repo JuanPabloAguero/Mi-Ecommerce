@@ -5,6 +5,7 @@ const http = require("http");
 const WebSocket = require("ws");
 const path = require('path');
 const session = require('express-session');
+const { SESSION_SECRET, IS_PRODUCTION } = require('./src/config/env');
 const expressLayouts = require('express-ejs-layouts');
 const runMigration = require('./db/migrate');
 const eventService = require('./src/services/eventService');
@@ -40,22 +41,29 @@ app.use('/api', apiRoutes);
 app.use('/api', apiErrorHandler.notFound);
 app.use('/api', apiErrorHandler.serverError);
 
-// Configurar express-session
+// Configurar express-session (solo las vistas EJS; la API usa JWT)
 app.use(
   session({
-    secret: 'miEcommerceSecretKey',
+    secret: SESSION_SECRET,
     resave: false,
-    saveUninitialized: true
+    saveUninitialized: false, // no crea sesión para visitantes que no guardan nada
+    cookie: {
+      httpOnly: true,                 // la cookie no es legible desde JavaScript
+      sameSite: 'lax',                // mitiga CSRF
+      secure: IS_PRODUCTION,          // solo por HTTPS en producción
+      maxAge: 1000 * 60 * 60          // 1 hora
+    }
   })
 );
 
 // Importar enrutador principal, middlewares de carrito y de error
 const routes = require('./src/routes');
+const { sessionLocals } = require('./src/middlewares/sessionAuth');
 const cartLocals = require('./src/middlewares/cartLocals');
 const errorHandler = require('./src/middlewares/errorHandler');
 
-// Middleware para inicializar el carrito y exponer cartCount a EJS
-app.use(cartLocals);
+app.use(sessionLocals); // identifica al usuario de la sesión
+app.use(cartLocals); // middleware para inicializar el carrito y exponer cartCount a EJS
 
 // Rutas de la aplicación agrupadas en el router principal
 app.use('/', routes);

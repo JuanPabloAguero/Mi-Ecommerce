@@ -3,7 +3,8 @@ const cartService = require('../services/cartService');
 
 const cartLocals = (req, res, next) => {
   // Publica la cantidad total calculada en res.locals.cartCount
-  res.locals.cartCount = cartService.getTotalQuantity(req);
+  // Solo los usuarios autenticados tienen carrito
+  res.locals.cartCount = req.user ? cartService.getTotalQuantity(req) : 0;
   next();
 };
 
