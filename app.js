@@ -42,19 +42,20 @@ app.use('/api', apiErrorHandler.notFound);
 app.use('/api', apiErrorHandler.serverError);
 
 // Configurar express-session (solo las vistas EJS; la API usa JWT)
-app.use(
-  session({
-    secret: SESSION_SECRET,
-    resave: false,
-    saveUninitialized: false, // no crea sesión para visitantes que no guardan nada
-    cookie: {
-      httpOnly: true,                 // la cookie no es legible desde JavaScript
-      sameSite: 'lax',                // mitiga CSRF
-      secure: IS_PRODUCTION,          // solo por HTTPS en producción
-      maxAge: 1000 * 60 * 60          // 1 hora
-    }
-  })
-);
+// Se guarda en una constante para reutilizarlo también en las conexiones WebSocket
+const sessionMiddleware = session({
+  secret: SESSION_SECRET,
+  resave: false,
+  saveUninitialized: false, // no crea sesión para visitantes que no guardan nada
+  cookie: {
+    httpOnly: true,                 // la cookie no es legible desde JavaScript
+    sameSite: 'lax',                // mitiga CSRF
+    secure: IS_PRODUCTION,          // solo por HTTPS en producción
+    maxAge: 1000 * 60 * 60          // 1 hora
+  }
+});
+
+app.use(sessionMiddleware); // Se registra la misma instancia que usará el WebSocket
 
 // Importar enrutador principal, middlewares de carrito y de error
 const routes = require('./src/routes');
@@ -79,7 +80,19 @@ const wss = new WebSocket.Server({ server }); // 2. Instanciar el servidor WebSo
 
 // Delegar registro y eliminación de sockets al EventService
 wss.on("connection", (ws, req) => {
-  eventService.addClient(ws);
+  // Se ejecuta el middleware de sesión sobre la petición de upgrade para leer la cookie
+  // y recuperar la sesión de quien abrió el socket (se pasa un objeto vacío como "res" porque
+  // en un upgrade no hay respuesta HTTP normal)
+  sessionMiddleware(req, {}, (err) => {
+    // El socket solo se asocia a una sesión si hay un usuario autenticado;
+    // Si hubo un error o es un visitante anónimo, queda sin sesión (null) y no recibe eventos del carrito
+    const sessionId = !err && req.session && req.session.user ? req.sessionID : null;
+
+    // La lectura de la sesión es asíncrona; si el socket ya se cerró mientras tanto, no se registra
+    if (ws.readyState !== WebSocket.OPEN) return;
+
+    eventService.addClient(ws, sessionId); // Rcibe el ID de sesión del socket
+  });
 
   ws.on("close", () => {
     eventService.removeClient(ws);

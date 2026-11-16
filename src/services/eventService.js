@@ -7,8 +7,10 @@ class EventService {
   /**
    * Registrar una nueva conexión WebSocket activa
    * @param {WebSocket} ws 
+   * @param {string|null} sessionId ID de la sesión autenticada dueña del socket (null si es anónimo)
    */
-  addClient(ws) {
+  addClient(ws, sessionId = null) {
+    ws.sessionId = sessionId; // asocia el socket a su sesión para enviarle solo sus propios eventos
     this.clients.add(ws);
     console.log(`[EventService] Cliente conectado. Total activos: ${this.clients.size}`);
   }
@@ -43,6 +45,23 @@ class EventService {
       const message = this.serialize(type, payload);
       ws.send(message);
     }
+  }
+
+  /**
+   * Emitir un evento solo a las conexiones que pertenecen a una sesión
+   * (por ejemplo, todas las pestañas abiertas por la misma persona)
+   * @param {string} sessionId 
+   * @param {string} type 
+   * @param {Object} payload 
+   */
+  emitToSession(sessionId, type, payload) {
+    if (!sessionId) return; // sin sesión no hay destinatario: nunca se envía a sockets anónimos
+
+    this.clients.forEach((client) => {
+      if (client.sessionId === sessionId) {
+        this.emitTo(client, type, payload); // reutiliza emitTo, que verifica que el socket esté abierto
+      }
+    });
   }
 
   /**

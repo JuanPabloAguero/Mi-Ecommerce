@@ -8,11 +8,12 @@ const notifyCartUpdate = (req) => {
   const cartCount = cartService.getTotalQuantity(req.session);
 
   // Delegar la emisión al servicio de eventos pasando el tipo y el payload
-  eventService.broadcast('cartUpdated', {
+  // Llega solo a los sockets de la sesión dueña del carrito, no a todos (como sería en el caso de broadcast)
+  eventService.emitToSession(req.sessionID, 'cartUpdated', {
     cartCount,
     cartItems,
     total
-  });
+  })
 };
 
 // Marca en sesión si la acción dejó el carrito vacío (tenía productos antes)
